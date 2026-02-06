@@ -1,0 +1,39 @@
+name: PR LLM Analyze
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  analyze:
+    runs-on: [self-hosted, llm]
+
+    steps:
+      - name: Fetch PR diff (no checkout)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.url }}
+        run: |
+          set -euo pipefail
+          curl -L \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github.v3.diff" \
+            "${PR_URL}" > pr.diff
+
+      - name: Run local LLM review
+        env:
+          LLM_BASE_URL: "http://127.0.0.1:11434"
+          LLM_MODEL: "qwen3:8b"
+        run: |
+          python3 .github/scripts/local_llm_review.py pr.diff review.md
+
+      - name: Upload review artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-llm-review
+          path: review.md
+          retention-days: 3
