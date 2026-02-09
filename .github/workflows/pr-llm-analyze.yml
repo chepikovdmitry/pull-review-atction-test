@@ -27,7 +27,7 @@ jobs:
       - name: Run local LLM review
         env:
           LLM_BASE_URL: "http://127.0.0.1:11434"
-          LLM_MODEL: "qwen3:8b"
+          LLM_MODEL: "qwen3-coder:30b"
         run: |
           python3 .github/scripts/local_llm_review.py pr.diff review.md
 
