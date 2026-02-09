@@ -42,3 +42,9 @@ jobs:
           name: pr-llm-review
           path: review.md
           retention-days: 3
+      - name: Print review to logs
+        if: ${{ always() }}
+        run: |
+          echo "===== LLM REVIEW START ====="
+          cat review.md
+          echo "===== LLM REVIEW END ====="
