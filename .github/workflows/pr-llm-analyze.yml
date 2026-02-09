@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   analyze:
-    runs-on: [self-hosted, llm]
+    runs-on: [self-hosted]
 
     steps:
       - name: Fetch PR diff (no checkout)
